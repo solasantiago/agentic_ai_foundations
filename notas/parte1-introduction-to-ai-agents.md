@@ -933,3 +933,12 @@ MCP shifts responsibilities from your application to the MCP server.
 - Produces the final answer
 
 > The LLM sees absolutely no difference between MCP and non-MCP.
+
+### Why MCP makes your Agent better
+
+`MCP Math Server` → usado por las 4 apps al mismo tiempo: **Your agent** (LangChain), **Claude** (Desktop), **Cursor** (IDE), **ChatGPT** (desktop) — all 4 apps use the same tools, build once, use everywhere.
+
+- **Write tools once** — Define `add()`, `multiply()` etc. in one server file. Every AI app discovers them automatically.
+- **Update in one place** — Fix a bug in `divide()`? Change the server — all connected agents get the fix instantly.
+- **Mix and match servers** — Add a GitHub server + Slack server to the same agent: just add entries to config dictionary.
+- **Agent code stays clean** — Your agent focuses on reasoning. Tool logic lives separately. Easier to test and maintain.

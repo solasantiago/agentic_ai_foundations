@@ -25,6 +25,10 @@ recursos/
 
 ## Contenido cubierto
 
+### Parte 1 — Introduction to AI Agents, LangChain & MCP
+
+_Dictada por Florencia Díaz. Horario: 9:30 - 11:00._
+
 - **Introduction to AI Agents** — componentes de un Agent (LLM, Tools, Loop), Agent Execution Loop, reasoning frameworks (CoT, ReAct, ToT), Agent Frameworks, Safety & Guardrails.
 - **LangChain for AI Agents** — Models, Prompt Templates, Chains (LCEL), Tools, y un walkthrough paso a paso de qué pasa internamente al llamar `agent.invoke()`.
 - **Introduction to MCP** — qué es el Model Context Protocol, arquitectura, Core Primitives (Tools/Resources/Prompts), connection lifecycle, JSON-RPC 2.0, transport mechanisms, y cómo sumar un MCP Server a un Agent.
