@@ -10,8 +10,8 @@ Esta es la referencia principal del repo. Cada parte tiene su propio resumen de 
 |---|---|---|---|---|
 | 9:30 - 10:00 | Florencia Díaz | Introduction to AI Agents | [📖 resumen](notas/resumen-parte1.md) | [notas](notas/parte1-introduction-to-ai-agents.md) |
 | 10:00 - 10:30 | Florencia Díaz | LangChain for AI Agents | [📖 resumen](notas/resumen-parte2.md) | [notas](notas/parte2-langchain-for-ai-agents.md) |
-| 10:30 - 11:30 | Florencia Díaz | Introduction to MCP | [📖 resumen](notas/resumen-parte3.md) | [notas](notas/parte3-introduction-to-mcp.md) |
-| 11:30 - en curso | Por confirmar | OpenAI Responses API and Agents SDK | _pendiente_ | [notas](notas/parte4-openai-responses-api-and-agents-sdk.md) |
+| 10:30 - 11:30 | Johannes Segura Campos | Introduction to MCP | [📖 resumen](notas/resumen-parte3.md) | [notas](notas/parte3-introduction-to-mcp.md) |
+| 11:30 - en curso | Johannes Segura Campos | OpenAI Responses API and Agents SDK | [📖 resumen](notas/resumen-parte4.md) | [notas](notas/parte4-openai-responses-api-and-agents-sdk.md) |
 
 _Nota: horarios redondeados a :00/:30 en base al horario real de la clase (cada corte coincide con el quiz de práctica al final de cada tema, salvo la última fila que sigue en curso). El resto de las partes del día (ver `notas/agenda.md`) todavía no tienen apuntes cargados en este repo._
 
@@ -22,6 +22,7 @@ notas/
 ├── resumen-parte1.md                      # 📖 Resumen de repaso — Introduction to AI Agents
 ├── resumen-parte2.md                      # 📖 Resumen de repaso — LangChain for AI Agents
 ├── resumen-parte3.md                      # 📖 Resumen de repaso — Introduction to MCP
+├── resumen-parte4.md                      # 📖 Resumen de repaso — OpenAI Responses API and Agents SDK
 ├── parte1-introduction-to-ai-agents.md    # Notas completas: Introduction to AI Agents
 ├── parte2-langchain-for-ai-agents.md      # Notas completas: LangChain for AI Agents
 ├── parte3-introduction-to-mcp.md          # Notas completas: Introduction to MCP
