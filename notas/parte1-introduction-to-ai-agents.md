@@ -687,3 +687,205 @@ An open standard that provides a universal interface for AI applications to conn
 2. **Discover** — Client requests list of tools, resources, prompts.
 3. **Operate** — LLM decides tools to call, client executes those calls.
 4. **Shutdown** — Client closes transport and ends session.
+
+## MCP uses JSON-RPC 2.0
+
+JSON-RPC messages include:
+- **jsonrpc** (always "2.0").
+- **id** (used to match requests and responses, when applicable).
+- One of: **method** (request), **result** (success), or **error** (failure).
+
+> In most cases, frameworks like FastMCP and LangChain handle this for you — but understanding the structure helps with debugging.
+
+**Request (client → server):**
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "multiply",
+    "arguments": { "a": 15, "b": 8 }
+  }
+}
+```
+
+**Response (server → client):**
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "content": [
+      { "type": "text", "text": "120.0" }
+    ]
+  }
+}
+```
+
+## MCP Method #1: tools/list
+
+- Typically called when the client connects to discover available tools.
+- The server returns every tool it offers.
+- Agent discovers tools without you hardcoding them.
+
+**Request (client → server):** that's it — no parameters needed. Just "tell me what you have."
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/list"
+}
+```
+
+**Response (server → client):**
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": { "tools": [
+    {
+      "name": "multiply",
+      "description": "Multiply two numbers",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "a": {"type": "number"},
+          "b": {"type": "number"}
+        }
+      }
+    },
+    "... add, divide, square_root ..."
+  ]}
+}
+```
+
+## MCP Transport Mechanisms
+
+| STDIO Transport | Streamable HTTP Transport |
+|---|---|
+| Host spawns server as a child process | Server runs as an HTTP service |
+| Messages flow through stdin / stdout | Client → Server via HTTP POST |
+| No network overhead — fastest option | Server → Client via SSE streaming |
+| Server runs on the same machine | Supports remote / cloud deployment |
+| One client per server instance | Multiple clients can connect |
+| Best for local tools (files, git, shell) | Standard HTTP auth (OAuth, tokens) |
+
+`Client ←stdin/stdout→ Server` vs. `Client ←POST/SSE→ Server`
+
+## Add MCP Server to your First Agent
+
+### Before MCP: First Agent
+
+Everything lives in one file (`first_agent.py`) — tightly coupled.
+
+`GPT-4o (The AI brain) → ReAct agent (Reason → Act → Observe) → calls: add(), multiply(), divide(), square_root()`
+
+**The problem:**
+- Tools are hardcoded with `@tool` decorators.
+- Only THIS agent can use them.
+- Want the same tools in Claude? Copy-paste the code.
+- Change a tool? Must update every agent that has a copy.
+- No sharing, no reuse.
+
+### After MCP: Two separate files (Client, Server)
+
+Tools live on a server — any AI app can discover and use them.
+
+**`first_agent_with_mcp.py` — The agent (consumer)**
+`GPT-4o (The AI brain) → ReAct agent (Reason → Act → Observe) → MCP client (langchain-mcp-adapters)`
+
+**`first_agent_with_mcp.py` — The MCP server (provider)**
+`FastMCP("Math") (Server framework) → add(), multiply(), divide(), square_root()` — vía `@mcp.tool()` decorators.
+
+### MCP Server (código)
+
+```python
+from mcp.server.fastmcp import FastMCP
+import math
+
+# 1. Create the MCP server
+mcp = FastMCP("Math")
+
+# 2. These are the SAME tools from first_agent.py but now exposed via MCP instead of @tool
+@mcp.tool()
+def add(a: float, b: float) -> float:
+    """Add two numbers together. Use for addition operations."""
+    return a + b
+
+@mcp.tool()
+def multiply(a: float, b: float) -> float:
+    """Multiply two numbers together. Use for multiplication operations."""
+    return a * b
+
+# 3. Run the server
+# transport="stdio" means the server communicates via stdin/stdout — the agent launches it as a subprocess.
+if __name__ == "__main__":
+    mcp.run(transport="stdio")
+```
+
+### Agent (MCP Client) connects to the MCP Server
+
+```python
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langchain.agents import create_agent
+
+async def main():
+    """
+    Main async function — MCP connections are async because they involve I/O (spawning processes, network calls).
+    """
+    # Connect to the MCP Server
+    # Instead of defining tools locally, we point to an MCP server and let agent discover tools automatically.
+    # Get the absolute path to the MCP server script
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    server_path = os.path.join(current_dir, "mcp_math_server.py")
+
+    client = MultiServerMCPClient(
+        {
+            "math": {
+                # The MCP server to connect to
+                "command": "python",
+                "args": [server_path],
+                "transport": "stdio",  # Local process (stdin/stdout)
+            },
+        }
+    )
+```
+
+### Agent (MCP Client) discovers (and calls) tools from MCP Server
+
+```python
+# Discover Tools from the MCP Server
+# This is where the magic happens!
+# The client connects to the server, performs the MCP
+# handshake, and auto-discovers all available tools.
+# Each MCP tool is converted into a LangChain tool.
+
+tools = await client.get_tools()
+
+print("=" * 55)
+print("  MCP Agent — Tools discovered from MCP Server")
+print("=" * 55)
+print(f"\n Found {len(tools)} tools from MCP server:\n")
+for t in tools:
+    print(f"  {t.name}: {t.description[:60]}...")
+print()
+```
+
+**Output:**
+```
+MCP Agent — Tools discovered from MCP Server
+Found 4 tools from MCP server:
+  add: Add two numbers together. Use for addition operations....
+  multiply: Multiply two numbers together. Use for multiplication operat...
+  divide: Divide the first number by the second. Returns error if divi...
+  square_root: Calculate the square root of a number....
+```
+
+### After MCP: Agent Architecture
+
+**Before MCP:** `User ↔ Your Application ↔ LLM ↔ Local @tool Functions`
+
+**After MCP:** `User ↔ Your Application ↔ LLM ↔ MCP Client ↔ MCP Server ↔ Tool Implementation` (MCP Client + MCP Server = "MCP Layer")
+
+> MCP inserts a standardized tool execution layer — it does not replace the LLM or the agent loop.
