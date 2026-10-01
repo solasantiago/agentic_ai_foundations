@@ -187,4 +187,4 @@ result = agent.invoke({"messages": [("user", "pregunta")]})
 
 ---
 
-📖 Detalle completo con slides y código: `parte1-introduction-to-ai-agents.md`
+📖 Detalle completo con slides y código: `parte1-introduction-to-ai-agents.md` · `parte2-langchain-for-ai-agents.md`
