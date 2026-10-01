@@ -512,3 +512,21 @@ Every agent run is automatically traced. View it at: `platform.openai.com → Da
 - When the application needs only a single text response
 - When the application avoids all tool usage entirely
 - When the application requires no conversational state management
+
+**3. In the Responses API, what is the benefit of using previous_response_id when continuing a conversation?**
+- It allows the API to continue a prior conversation context across turns. ✅ (ver Lesson 2 — Conversation Chaining: `previous_response_id` encadena turnos, el modelo accede al contexto previo sin reenviar todos los mensajes)
+- It automatically selects the fastest available OpenAI model.
+- It converts tool outputs into structured database records.
+- It encrypts earlier prompts before sending new requests.
+
+**4. In the Manager multi-agent pattern, what is the role of central manager agent?**
+- It transfers full conversational control to another agent.
+- It coordinates specialized agents while remaining in control. ✅ (ver Lesson 5 — Multi-Agent Systems: Manager (Centralized) — "A central agent calls specialized agents as tools. The manager keeps control of the conversation")
+- It disables tool usage for all worker agents.
+- It converts all handoffs into synchronous operations.
+
+**5. What is the purpose of tracing in the OpenAI Agents SDK?**
+- To permanently store model weights after fine-tuning
+- To monitor agent execution steps and debugging details ✅ (ver Lesson 6 — Tracing: Agent Calls, Tool Usage, Handoffs, Guardrail Results, Token Usage — "See What Your Agent Did")
+- To automatically optimize prompts before each API call
+- To convert tool results into structured training datasets
