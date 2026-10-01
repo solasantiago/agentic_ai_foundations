@@ -12,10 +12,10 @@ Esta es la referencia principal del repo. Cada parte tiene su propio resumen de 
 | 10:00 - 10:30 | Florencia Díaz | LangChain for AI Agents | [📖 resumen](notas/resumen-parte2.md) | [notas](notas/parte2-langchain-for-ai-agents.md) |
 | 10:30 - 11:30 | Johannes Segura Campos | Introduction to MCP | [📖 resumen](notas/resumen-parte3.md) | [notas](notas/parte3-introduction-to-mcp.md) |
 | 11:30 - 12:00 | Johannes Segura Campos | OpenAI Responses API and Agents SDK | [📖 resumen](notas/resumen-parte4.md) | [notas](notas/parte4-openai-responses-api-and-agents-sdk.md) |
-| 12:00 - 12:30 | A determinar | Agentic AI for Enterprises | [📖 resumen](notas/resumen-parte5.md) | [notas](notas/parte5-agentic-ai-for-enterprises.md) |
-| 12:30 - en curso | A determinar | Por confirmar | _pendiente_ | _pendiente_ |
+| 12:00 - 12:30 | Martin Grunert | Agentic AI for Enterprises | [📖 resumen](notas/resumen-parte5.md) | [notas](notas/parte5-agentic-ai-for-enterprises.md) |
+| 12:30 - 13:30 | Martin Grunert | Agentic AI for Oracle AI Database | [📖 resumen](notas/resumen-parte6.md) | [notas](notas/parte6-agentic-ai-for-oracle-ai-database.md) |
 
-_Nota: horarios redondeados a :00/:30 en base al horario real de la clase (cada corte coincide con el quiz de práctica al final de cada tema, salvo la última fila que sigue en curso). El resto de las partes del día (ver `notas/agenda.md`) todavía no tienen apuntes cargados en este repo._
+_Nota: horarios redondeados a :00/:30 en base al horario real de la clase (cada corte coincide con el quiz de práctica al final de cada tema). El resto de las partes del día (ver `notas/agenda.md`) todavía no tienen apuntes cargados en este repo._
 
 ## Estructura
 
@@ -26,11 +26,13 @@ notas/
 ├── resumen-parte3.md                      # 📖 Resumen de repaso — Introduction to MCP
 ├── resumen-parte4.md                      # 📖 Resumen de repaso — OpenAI Responses API and Agents SDK
 ├── resumen-parte5.md                      # 📖 Resumen de repaso — Agentic AI for Enterprises
+├── resumen-parte6.md                      # 📖 Resumen de repaso — Agentic AI for Oracle AI Database
 ├── parte1-introduction-to-ai-agents.md    # Notas completas: Introduction to AI Agents
 ├── parte2-langchain-for-ai-agents.md      # Notas completas: LangChain for AI Agents
 ├── parte3-introduction-to-mcp.md          # Notas completas: Introduction to MCP
 ├── parte4-openai-responses-api-and-agents-sdk.md  # Notas completas: OpenAI Responses API and Agents SDK
 ├── parte5-agentic-ai-for-enterprises.md   # Notas completas: Agentic AI for Enterprises
+├── parte6-agentic-ai-for-oracle-ai-database.md  # Notas completas: Agentic AI for Oracle AI Database
 └── agenda.md                              # Agenda del día de certificación
 
 recursos/
@@ -61,6 +63,10 @@ Qué es un AI Agent, el OpenAI Agent Stack (Application → Agents SDK → Respo
 ### Parte 5 — Agentic AI for Enterprises
 
 Qué falta para llevar un agent de "funciona en mi laptop" a producción: el Agent Stack completo (User/App → Runtime Architecture → Agent Logic) y las 7 piezas de runtime que hay que construir o contratar (request handling, execution environment, orchestration & state, tool sandbox, integrations, scaling & reliability, observability).
+
+### Parte 6 — Agentic AI for Oracle AI Database
+
+Oracle AI Vector Search (embeddings, chunking, el tipo `VECTOR`, distance functions), Oracle AI Database Private Agent Factory (Knowledge Agent, Data Analysis Agent, Agent Builder), y el Oracle Autonomous AI Database MCP Server (MCP nativo de la base vs. de terceros, arquitectura NL2SQL/RAG/Custom PL/SQL).
 
 ## Notas
 
