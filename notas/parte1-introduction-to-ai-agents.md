@@ -619,3 +619,71 @@ Frameworks help beginners by hiding machinery. Understanding what is underneath 
 - It allows developers to switch providers with minimal code changes. ✅ (ver "Models — Reasoning Engine": `init_chat_model("openai:gpt-4o")` → cambiar a `init_chat_model("anthropic:claude-3.5")` con una línea)
 - It automatically fine-tunes models for specific business tasks.
 - It removes the need for provider-specific API credentials.
+
+---
+
+# Introduction to MCP
+
+_Oracle University. Model Context Protocol._
+
+## M3: Introduction to MCP — Agenda del módulo
+
+- What is Model Context Protocol (MCP)?
+- Core components — Tools, Resources, Prompts
+- Add MCP Server to your first Agent
+- Real-world MCP Walkthrough
+
+## What is MCP?
+
+An open standard that provides a universal interface for AI applications to connect with external tools, data sources, and systems — securely and consistently.
+
+- **Launched** — November 2024 by Anthropic
+- **Supported across the ecosystem** — OpenAI, Oracle, Microsoft, AWS
+- **Foundation** — JSON-RPC 2.0, Open source
+- **Governed By** — Agentic AI Foundation (Linux Foundation)
+
+> Think of MCP as USB-C for AI — any MCP-compatible client can talk to any MCP-compatible server, regardless of who built them.
+
+## The Problem MCP Solves
+
+**BEFORE MCP: N × M Problem**
+`Claude, ChatGPT, Gemini` × `GitHub, Slack, Drive, Database` — every AI app needs a custom connector for every tool = 12 integrations (3×4).
+
+**AFTER MCP: N + M Solution**
+`Claude, ChatGPT, Gemini → MCP → GitHub, Slack, Drive, Database` — each side builds ONE MCP integration = only 7 total integrations (3+4).
+
+## MCP Architecture
+
+**MCP HOST** (Claude Desktop, VS Code, or any MCP-enabled AI application)
+- Contains: `LLM (AI Model)` + `MCP Client 1 / 2 / 3`
+- Cada client se conecta a un server distinto: `MCP Server File System`, `MCP Server GitHub API`, `MCP Server Slack`
+
+**Key Points**
+- Host manages the AI app and creates clients.
+- Each client connects to exactly one server.
+- Servers expose tools, data, and prompts.
+- Communication uses JSON-RPC 2.0.
+- Servers can run locally or remotely.
+
+### Different Boundaries — Math vs Oracle Usage MCP server
+
+- **MCP Client Code (we wrote)** `first_agent_mcp.py` → **MCP Math Server (we wrote)** `mcp_math_server.py` → **Local Python tools (we wrote)** `Add(), subtract(), multiply(py)` — vía stdio, JSON-RPC 2.0, Python function call.
+- **MCP Client code (we wrote)** `mcp_usage_mcp_client.py` → **Oracle Usage MCP server (Oracle wrote)** `we made an usage mcp-server` → **OCI Usage REST API (Oracle hosts)** `Report/Cummarized/usage` — vía HTTPS, OCI SDK.
+
+> Same: Client code shape, JSON-RPC protocol, Stdio transport, list_tools/call_tool.
+> Different: who owns the server and what the server ultimately wraps.
+
+## Core Primitives
+
+| Primitive | Control | Qué hace | Ejemplos | Analogía |
+|---|---|---|---|---|
+| **Tools** | Model-Controlled | Functions the AI can call to perform actions ("Do something") | `create_issue()`, `send_message()`, `query_database()`, `run_test()` | Como POST endpoints — ejecutan código y producen side effects |
+| **Resources** | Application-Controlled | Structured data the AI can read for context ("Read Something") | `file://project/readme.md`, `db://users/schema`, `api://config/settings` | Como GET endpoints — cargan info en el context window del LLM |
+| **Prompts** | User-Controlled | Templates that structure LLM interactions ("Structure something") | `bug_report_template`, `code_review_prompt`, `summarize_doc_template` | Como slash commands — los usuarios los invocan a través de elementos de UI |
+
+## The MCP Connection Lifecycle
+
+1. **Initialize** — Client sends protocol version & capabilities to server.
+2. **Discover** — Client requests list of tools, resources, prompts.
+3. **Operate** — LLM decides tools to call, client executes those calls.
+4. **Shutdown** — Client closes transport and ends session.
