@@ -1,4 +1,6 @@
-# Parte 1 — Introduction to AI Agents
+# Parte 1 — Introduction to AI Agents, LangChain & MCP
+
+_Dictada por Florencia Díaz. Horario: 9:30 - 11:00._
 
 ## Three Core Components of Every Agent
 
@@ -889,3 +891,45 @@ Found 4 tools from MCP server:
 **After MCP:** `User ↔ Your Application ↔ LLM ↔ MCP Client ↔ MCP Server ↔ Tool Implementation` (MCP Client + MCP Server = "MCP Layer")
 
 > MCP inserts a standardized tool execution layer — it does not replace the LLM or the agent loop.
+
+### After MCP: What Changed (Tool Execution)
+
+**Before MCP:**
+`LLM asks for multiply Tool → Agent (App) calls local Python function → Agent (App) gets result → Agent (App) sends result to LLM`
+
+**After MCP:**
+`LLM asks for multiply Tool → Agent (App) creates MCP client → MCP client → MCP server → MCP server executes tool → MCP server returns result → Agent (App) sends result to LLM`
+
+### What Your Agent App No Longer Needs To Do
+
+MCP shifts responsibilities from your application to the MCP server.
+
+| ❌ Without MCP: Your App Does | ✅ With MCP: Server Provides |
+|---|---|
+| Define tool schemas (`@tool` decorators) | Tool discovery (`tools/list`) |
+| Register tools in a local registry | Tool schemas (`inputSchema`) |
+| Map tool names to code | Standardized invocation (`tools/call`) |
+| Execute tools directly | Standardized results (`content[]`) |
+| Handle errors and edge cases | Server-side error handling |
+| Maintain all tool implementations | Tool implementation & maintenance |
+
+> Your app becomes a tool orchestrator, not a custom integration owner.
+
+### From the LLM's Point of View
+
+**What the LLM Sees:**
+```json
+{"role": "tool", "tool_call_id": "call_001", "content": "120"}
+{"role": "tool", "tool_call_id": "call_002", "content": "40.0"}
+```
+> The LLM never knows if this came from a local function or an MCP server.
+
+**The LLM still:**
+- Sees tool names and descriptions
+- Chooses which tool to call
+- Provides arguments as JSON
+- Receives tool results back
+- Reasons step by step (ReAct)
+- Produces the final answer
+
+> The LLM sees absolutely no difference between MCP and non-MCP.
